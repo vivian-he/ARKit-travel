@@ -9,5 +9,7 @@
 import UIKit
 
 class CollectionViewCell: UICollectionViewCell {
+    @IBOutlet weak var travelImageView: UIImageView!
     
+    @IBOutlet weak var TravelLabel: UILabel!
 }

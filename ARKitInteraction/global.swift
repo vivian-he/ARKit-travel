@@ -7,3 +7,12 @@
 //
 
 import Foundation
+
+class Main {
+    var count:IntegerLiteralType
+  init() {
+    self.count = 0
+    
+  }
+}
+var mainInstance = Main()

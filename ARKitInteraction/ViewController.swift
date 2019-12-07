@@ -9,13 +9,19 @@ import ARKit
 import SceneKit
 import UIKit
 
-class ViewController: UIViewController {
-    
+
+
+class ViewController: UIViewController{
+
+
     // MARK: IBOutlets
+    var imgName:String = ""
     
     @IBOutlet var sceneView: VirtualObjectARView!
     
     @IBOutlet weak var addObjectButton: UIButton!
+    
+    @IBOutlet weak var imageView: UIImageView!
     
     @IBOutlet weak var blurView: UIVisualEffectView!
     
@@ -58,11 +64,56 @@ class ViewController: UIViewController {
     
     // MARK: - View Controller Life Cycle
     
+
+    @IBAction func nextViewButtonPressed(_ sender: Any) {
+        print("button pressed")
+        self.performSegue(withIdentifier: "SecondViewSegue", sender: self)
+    }
+    
+
+    @IBAction func didTakeSnapshot(_ sender: Any) {
+        UIImageWriteToSavedPhotosAlbum(self.sceneView.snapshot(), nil, nil, nil)
+        imageView.image = self.sceneView.snapshot()
+        mainInstance.count+=1
+        imgName = "img" + String(mainInstance.count) + ".png"
+        saveImage(imageName: imgName )
+
+        print("PICTURE COUNT" + String(mainInstance.count))
+    }
+
+    
+    @IBAction func onGalleryButton(_ sender: Any) {
+        self.performSegue(withIdentifier: "gallerySegue", sender: self)
+    }
+    
+
+    func saveImage(imageName: String){
+       //create an instance of the FileManager
+        let fileManager = FileManager.default
+        
+       //get the image path
+        let imagePath = (NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] as NSString).appendingPathComponent(imageName)
+        
+       //get the image we took with camera
+       let image = imageView.image!
+        
+       //get the PNG data for this image
+        let data = image.pngData()
+        
+       //store it in the document directory
+        fileManager.createFile(atPath: imagePath as String, contents: data, attributes: nil)
+        
+        print("orig path" + String(imagePath))
+    }
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         sceneView.delegate = self
         sceneView.session.delegate = self
+        
         
         // Set up coaching overlay.
         setupCoachingOverlay()
